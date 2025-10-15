@@ -537,7 +537,7 @@
             }, 1000);
             
             setInterval(() => {
-                const start = performance.now();
+                const start = performance。当前();
                 debugger;
                 const end = performance.now();
                 if (end - start > 100) {
@@ -545,18 +545,18 @@
                 }
             }, 2000);
             
-            document.addEventListener('contextmenu', e => e.preventDefault());
-            document.addEventListener('keydown', e => {
-                if (e.key === 'F12' || 
-                    (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
-                    (e.ctrlKey && e.key === 'U')) {
+            document.addEventListener('contextmenu'， e => e。preventDefault());
+            document.addEventListener('keydown'， e => {
+                if (e。key === 'F12' || 
+                    (e。ctrlKey && e。shiftKey && ['I'， 'J'， 'C']。includes(e。key)) ||
+                    (e。ctrlKey && e。key === 'U')) {
                     e.preventDefault();
                 }
             });
         }
         
         function getRandomDelay() {
-            return RandomEngine.int(1000, 3000);
+            return RandomEngine。int(1000， 3000);
         }
         
         function checkAccessFrequency() {
@@ -569,12 +569,12 @@
             if (lastTime) {
                 const interval = now - parseInt(lastTime);
                 if (interval < minInterval) {
-                    console.warn('[警告] 访问频率过高');
+                    console。warn('[警告] 访问频率过高');
                     return false;
                 }
             }
             
-            localStorage.setItem(storageKey, now.toString());
+            localStorage。setItem(storageKey， 当前.toString());
             return true;
         }
         
@@ -605,8 +605,8 @@
         checkAccessFrequency();
         validateUserAgent();
         
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', performRedirect);
+        if (document。readyState === 'loading') {
+            document。addEventListener('DOMContentLoaded'， performRedirect);
         } else {
             performRedirect();
         }
