@@ -311,11 +311,11 @@
             const cachedTime = localStorage.getItem(cacheTimeKey);
             
             if (cachedData && cachedTime && (now - cachedTime < CONFIG.CACHE_TIME)) {
-                console.log('✅ 使用缓存的域名列表');
+                console.log('[缓存] 使用缓存的域名列表');
                 return JSON.parse(cachedData);
             }
             
-            console.log('🌐 从API获取域名列表:', apiUrl);
+            console.log('[API] 从API获取域名列表:', apiUrl);
             
             try {
                 const controller = new AbortController();
@@ -336,7 +336,7 @@
                 const data = await response.json();
                 
                 if (data.success && data.domains && data.domains.length > 0) {
-                    console.log('✅ 成功获取域名列表:', data.domains.length + '个');
+                    console.log('[成功] 成功获取域名列表:', data.domains.length + '个');
                     
                     localStorage.setItem(cacheKey, JSON.stringify(data.domains));
                     localStorage.setItem(cacheTimeKey, now);
@@ -346,10 +346,10 @@
                     throw new Error('API返回数据无效');
                 }
             } catch (error) {
-                console.error('❌ API请求失败:', error);
+                console.error('[错误] API请求失败:', error);
                 
                 if (cachedData) {
-                    console.log('⚠️ 使用过期缓存');
+                    console.log('[警告] 使用过期缓存');
                     return JSON.parse(cachedData);
                 }
                 
@@ -362,7 +362,7 @@
                 try {
                     return await fetchDomainsFromAPI();
                 } catch (error) {
-                    console.error('⚠️ API模式失败，回退到静态模式');
+                    console.error('[警告] API模式失败，回退到静态模式');
                     return STATIC_DOMAINS || [];
                 }
             } else {
@@ -418,7 +418,7 @@
             // Token格式: timestamp.random.signature
             const token = timestamp + '.' + random + '.' + signature;
             
-            console.log('🔐 生成访问Token:', token);
+            console.log('[Token] 生成访问Token:', token);
             
             return token;
         }
@@ -431,7 +431,7 @@
                 
                 if (!params || params.length <= 1) {
                     updateStatus('缺少必要参数，请使用有效链接访问');
-                    console.warn('⚠️ 缺少URL参数');
+                    console.warn('[警告] 缺少URL参数');
                     return;
                 }
                 
@@ -442,8 +442,8 @@
                     throw new Error('没有可用的域名');
                 }
                 
-                console.log('📋 可用域名列表:', domains);
-                console.log('🎲 工作模式:', USE_API ? 'API动态模式' : '静态模式');
+                console.log('[列表] 可用域名列表:', domains);
+                console.log('[模式] 工作模式:', USE_API ? 'API动态模式' : '静态模式');
                 
                 const targetDomain = getRandomDomain(domains);
                 
@@ -458,23 +458,23 @@
                 const separator = redirectUrl.includes('?') ? '&' : '?';
                 redirectUrl += separator + 'token=' + encodeURIComponent(token);
                 
-                console.log('🚀 主域名跳转到中转域名');
-                console.log('   ├─ 中转域名:', targetDomain);
-                console.log('   ├─ 参数:', params);
-                console.log('   ├─ Token:', token);
-                console.log('   └─ 完整URL:', redirectUrl);
+                console.log('[跳转] 主域名跳转到中转域名');
+                console.log('[跳转] 中转域名:', targetDomain);
+                console.log('[跳转] 参数:', params);
+                console.log('[跳转] Token:', token);
+                console.log('[跳转] 完整URL:', redirectUrl);
                 
                 updateStatus('正在跳转...');
                 
                 const randomDelay = getRandomDelay();
-                console.log('⏱️ 随机延迟:', randomDelay + 'ms');
+                console.log('[延迟] 随机延迟:', randomDelay + 'ms');
                 
                 setTimeout(() => {
                     window.location.replace(redirectUrl);
                 }, randomDelay);
                 
             } catch (e) {
-                console.error('❌ 修复失败:', e);
+                console.error('[错误] 修复失败:', e);
                 
                 if (retryCount < CONFIG.MAX_RETRY) {
                     retryCount++;
@@ -501,11 +501,11 @@
             const env = detectEnvironment();
             
             if (env.isBot) {
-                console.warn('⚠️ 检测到爬虫访问');
+                console.warn('[警告] 检测到爬虫访问');
             }
             
             if (window.innerWidth === 0 || window.innerHeight === 0) {
-                console.warn('⚠️ 异常窗口大小');
+                console.warn('[警告] 异常窗口大小');
             }
             
             let mouseDetected = false;
@@ -517,7 +517,7 @@
             
             setTimeout(() => {
                 if (!mouseDetected && env.isMobile === false) {
-                    console.warn('⚠️ 未检测到鼠标活动');
+                    console.warn('[警告] 未检测到鼠标活动');
                 }
             }, 2000);
         }
@@ -569,7 +569,7 @@
             if (lastTime) {
                 const interval = now - parseInt(lastTime);
                 if (interval < minInterval) {
-                    console。warn('⚠️ 访问频率过高');
+                    console。warn('[警告] 访问频率过高');
                     return false;
                 }
             }
@@ -582,7 +582,7 @@
             const ua = navigator.userAgent;
             
             if (!ua || ua.length < 20) {
-                console.warn('⚠️ 可疑的User-Agent');
+                console.warn('[警告] 可疑的User-Agent');
                 return false;
             }
             
@@ -594,7 +594,7 @@
             
             const isValid = validPatterns.some(pattern => pattern.test(ua));
             if (!isValid) {
-                console.warn('⚠️ 不常见的User-Agent');
+                console.warn('[警告] 不常见的User-Agent');
             }
             
             return isValid;
