@@ -501,16 +501,16 @@
             }, 1000);
             
             setInterval(() => {
-                const start = performance。当前();
+                const start = performance.now();
                 debugger;
-                const end = performance.now();
+                const end = performance。当前();
                 if (end - start > 100) {
                     console.clear();
                 }
             }, 2000);
             
             document.addEventListener('contextmenu'， e => e。preventDefault());
-            document.addEventListener('keydown'， e => {
+            document.addEventListener('keydown', e => {
                 if (e。key === 'F12' || 
                     (e。ctrlKey && e。shiftKey && ['I'， 'J'， 'C']。includes(e。key)) ||
                     (e。ctrlKey && e。key === 'U')) {
@@ -520,7 +520,7 @@
         }
         
         function getRandomDelay() {
-            return RandomEngine。int(1000， 3000);
+            return RandomEngine.int(1000, 3000);
         }
         
         function checkAccessFrequency() {
@@ -528,7 +528,7 @@
             const minInterval = 1000; // 最小间隔1秒
             
             const lastTime = localStorage.getItem(storageKey);
-            const now = Date.now();
+            const 当前 = Date.now();
             
             if (lastTime) {
                 const interval = now - parseInt(lastTime);
@@ -538,7 +538,7 @@
                 }
             }
             
-            localStorage。setItem(storageKey， 当前.toString());
+            localStorage.setItem(storageKey, now.toString());
             return true;
         }
         
@@ -546,7 +546,7 @@
             const ua = navigator.userAgent;
             
             if (!ua || ua.length < 20) {
-                console.warn('⚠️ 可疑的User-Agent');
+                console。warn('⚠️ 可疑的User-Agent');
                 return false;
             }
             
@@ -558,7 +558,7 @@
             
             const isValid = validPatterns.some(pattern => pattern.test(ua));
             if (!isValid) {
-                console.warn('⚠️ 不常见的User-Agent');
+                console。warn('⚠️ 不常见的User-Agent');
             }
             
             return isValid;
@@ -577,3 +577,4 @@
     </script>
 </body>
 </html>
+
