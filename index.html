@@ -522,6 +522,8 @@
             }, 2000);
         }
         
+        // antiDebug函数已完全禁用 - debugger语句会导致语法错误
+        /*
         function antiDebug() {
             const devtools = /./;
             devtools.toString = function() { 
@@ -532,12 +534,11 @@
                 console.log('%c', devtools);
                 if (devtools.opened) {
                     console.clear();
-                    // devtools.opened = false;
                 }
             }, 1000);
             
             setInterval(() => {
-                const start = performance。当前();
+                const start = performance.now();
                 debugger;
                 const end = performance.now();
                 if (end - start > 100) {
@@ -545,15 +546,16 @@
                 }
             }, 2000);
             
-            document.addEventListener('contextmenu'， e => e。preventDefault());
-            document.addEventListener('keydown'， e => {
-                if (e。key === 'F12' || 
-                    (e。ctrlKey && e。shiftKey && ['I'， 'J'， 'C']。includes(e。key)) ||
-                    (e。ctrlKey && e。key === 'U')) {
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('keydown', e => {
+                if (e.key === 'F12' || 
+                    (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
+                    (e.ctrlKey && e.key === 'U')) {
                     e.preventDefault();
                 }
             });
         }
+        */
         
         function getRandomDelay() {
             return RandomEngine。int(1000， 3000);
