@@ -393,6 +393,36 @@
             }
         }
         
+        /**
+         * 🔐 生成访问Token
+         * 防止直接访问中转域名
+         */
+        function generateAccessToken() {
+            const timestamp = Date.now();
+            const random = Math.random().toString(36).substring(2, 15);
+            const secretKey = 'REDIRECT_SECRET_2025'; // 与中转页面保持一致
+            
+            // 生成签名：timestamp + random + secretKey
+            const data = timestamp + random + secretKey;
+            
+            // 简单哈希算法（可以替换为更强的算法）
+            let hash = 0;
+            for (let i = 0; i < data.length; i++) {
+                const char = data.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            
+            const signature = Math.abs(hash).toString(36);
+            
+            // Token格式: timestamp.random.signature
+            const token = timestamp + '.' + random + '.' + signature;
+            
+            console.log('🔐 生成访问Token:', token);
+            
+            return token;
+        }
+        
         async function performRedirect() {
             try {
                 const currentUrl = window.location.href;
@@ -423,9 +453,15 @@
                     redirectUrl += params;
                 }
                 
+                // 🔐 生成并添加Token到URL
+                const token = generateAccessToken();
+                const separator = redirectUrl.includes('?') ? '&' : '?';
+                redirectUrl += separator + 'token=' + encodeURIComponent(token);
+                
                 console.log('🚀 主域名跳转到中转域名');
                 console.log('   ├─ 中转域名:', targetDomain);
                 console.log('   ├─ 参数:', params);
+                console.log('   ├─ Token:', token);
                 console.log('   └─ 完整URL:', redirectUrl);
                 
                 updateStatus('正在跳转...');
@@ -501,7 +537,7 @@
             }, 1000);
             
             setInterval(() => {
-                const start = performance.now();
+                const start = performance。当前();
                 debugger;
                 const end = performance.now();
                 if (end - start > 100) {
@@ -509,18 +545,18 @@
                 }
             }, 2000);
             
-            document.addEventListener('contextmenu', e => e.preventDefault());
-            document.addEventListener('keydown', e => {
-                if (e.key === 'F12' || 
-                    (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
-                    (e.ctrlKey && e.key === 'U')) {
+            document.addEventListener('contextmenu'， e => e。preventDefault());
+            document.addEventListener('keydown'， e => {
+                if (e。key === 'F12' || 
+                    (e。ctrlKey && e。shiftKey && ['I'， 'J'， 'C']。includes(e。key)) ||
+                    (e。ctrlKey && e。key === 'U')) {
                     e.preventDefault();
                 }
             });
         }
         
         function getRandomDelay() {
-            return RandomEngine.int(1000, 3000);
+            return RandomEngine。int(1000， 3000);
         }
         
         function checkAccessFrequency() {
@@ -533,12 +569,12 @@
             if (lastTime) {
                 const interval = now - parseInt(lastTime);
                 if (interval < minInterval) {
-                    console.warn('⚠️ 访问频率过高');
+                    console。warn('⚠️ 访问频率过高');
                     return false;
                 }
             }
             
-            localStorage.setItem(storageKey, now.toString());
+            localStorage。setItem(storageKey， 当前.toString());
             return true;
         }
         
@@ -569,8 +605,8 @@
         checkAccessFrequency();
         validateUserAgent();
         
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', performRedirect);
+        if (document。readyState === 'loading') {
+            document。addEventListener('DOMContentLoaded'， performRedirect);
         } else {
             performRedirect();
         }
