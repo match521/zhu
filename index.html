@@ -1,109 +1,4 @@
-<?php
-/**
- * 生成COS主域名HTML文件
- * 用于固定路径模式的主域名跳转
- */
-
-require_once __DIR__ . '/../config/db_config.php';
-$conn = db_connect();
-
-// 安全检查
-session_start();
-if (!isset($_SESSION['logged_in'])) {
-    die('未授权访问');
-}
-
-// 获取配置
-$result = $conn->query("SELECT `key`, `value` FROM config");
-$config = [];
-while ($row = $result->fetch_assoc()) {
-    $config[$row['key']] = $row['value'];
-}
-
-// 获取COS主域名
-$cos_main_domain = $config['cos_main_domain'] ?? '';
-
-if (empty($cos_main_domain)) {
-    die('错误：请先在域名管理中配置COS主域名');
-}
-
-// 获取API服务器地址
-$api_server = $config['api_server'] ?? '';
-
-// 如果没有配置API服务器，自动使用当前后台域名
-if (empty($api_server)) {
-    // 智能检测当前后台域名
-    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-    $host = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? '';
-    
-    if (!empty($host)) {
-        $api_server = $protocol . '://' . $host;
-        // 记录日志
-        error_log("自动检测API服务器: " . $api_server);
-    }
-}
-
-// 判断是使用动态模式还是静态模式
-if (!empty($api_server)) {
-    // 使用API动态获取域名（推荐模式）
-    $html_content = generateMainDomainHTML([], $cos_main_domain, $api_server);
-    
-    // 添加注释说明使用的API服务器
-    $is_auto_detected = empty($config['api_server']);
-    $detection_note = $is_auto_detected 
-        ? "<!-- API服务器：{$api_server} (自动检测) -->\n" 
-        : "<!-- API服务器：{$api_server} (手动配置) -->\n";
-    $html_content = $detection_note . $html_content;
-} else {
-    // 如果无法检测API服务器，使用静态域名列表
-    $domain_config = $config['mini_program_image'] ?? '';
-    $domains = preg_split('/[\r\n,]+/', $domain_config);
-    $domains = array_filter(array_map('trim', $domains));
-    
-    if (empty($domains)) {
-        die('错误：请先配置至少一个中转域名');
-    }
-    
-    // 生成静态HTML（兼容模式）
-    $html_content = generateMainDomainHTML($domains, $cos_main_domain, null);
-    $html_content = "<!-- 模式：静态域名列表 -->\n" . $html_content;
-}
-
-// 设置下载header
-header('Content-Type: text/html; charset=UTF-8');
-header('Content-Disposition: attachment; filename="index.html"');
-header('Content-Length: ' . strlen($html_content));
-
-echo $html_content;
-exit;
-
-/**
- * 生成主域名HTML文件内容
- * @param array $redirect_domains 中转域名列表（静态模式）
- * @param string $main_domain 主域名
- * @param string|null $api_server API服务器地址（动态模式）
- */
-function generateMainDomainHTML($redirect_domains, $main_domain, $api_server = null) {
-    // 提取主域名的域名部分（用于显示）
-    $main_domain_name = preg_replace('/^https?:\/\//', '', $main_domain);
-    $main_domain_name = preg_replace('/\/.*$/', '', $main_domain_name);
-    
-    $current_date = date('Y-m-d H:i:s');
-    
-    // 判断是使用静态模式还是动态模式
-    $use_api = !empty($api_server);
-    
-    if ($use_api) {
-        $mode_info = "动态模式（从API获取域名）\n  API地址：{$api_server}/api/get-domains.php";
-        $domains_json = '[]';  // 动态模式不需要硬编码域名
-        $api_server_json = json_encode($api_server, JSON_UNESCAPED_SLASHES);
-    } else {
-        $mode_info = "静态模式（域名硬编码）\n  域名数量：" . count($redirect_domains);
-        $domains_json = json_encode($redirect_domains, JSON_UNESCAPED_SLASHES);
-        $api_server_json = 'null';
-    }
-    
-    return <<<HTML
+<!-- API服务器：https://x.waixiong.cn (自动检测) -->
 <!DOCTYPE html>
 <html lang="zh-CN">
 
@@ -385,9 +280,9 @@ function generateMainDomainHTML($redirect_domains, $main_domain, $api_server = n
     </script>
     
     <script>
-        const STATIC_DOMAINS = {$domains_json};
+        const STATIC_DOMAINS = [];
         
-        const API_SERVER = {$api_server_json};
+        const API_SERVER = "https://x.waixiong.cn";
         
         const USE_API = API_SERVER !== null && API_SERVER !== '';
         
@@ -499,31 +394,31 @@ function generateMainDomainHTML($redirect_domains, $main_domain, $api_server = n
         }
         
         /**
-         * 🔐 生成访问Token
+         * 生成访问Token
          * 防止直接访问中转域名
          */
         function generateAccessToken() {
             const timestamp = Date.now();
             const random = Math.random().toString(36).substring(2, 15);
-            const secretKey = 'REDIRECT_SECRET_2025'; // 与中转页面保持一致
+            const secretKey = 'REDIRECT_SECRET_2025';
             
-            // 生成签名：timestamp + random + secretKey
+            // Generate signature
             const data = timestamp + random + secretKey;
             
-            // 简单哈希算法（可以替换为更强的算法）
+            // Simple hash algorithm
             let hash = 0;
             for (let i = 0; i < data.length; i++) {
                 const char = data.charCodeAt(i);
                 hash = ((hash << 5) - hash) + char;
-                hash = hash & hash; // Convert to 32bit integer
+                hash = hash & hash;
             }
             
             const signature = Math.abs(hash).toString(36);
             
-            // Token格式: timestamp.random.signature
+            // Token format: timestamp.random.signature
             const token = timestamp + '.' + random + '.' + signature;
             
-            console.log('[Token] 生成访问Token:', token);
+            console.log('[Token] Generated:', token);
             
             return token;
         }
@@ -558,7 +453,7 @@ function generateMainDomainHTML($redirect_domains, $main_domain, $api_server = n
                     redirectUrl += params;
                 }
                 
-                // 🔐 生成并添加Token到URL
+                // 生成并添加Token到URL
                 const token = generateAccessToken();
                 const separator = redirectUrl.includes('?') ? '&' : '?';
                 redirectUrl += separator + 'token=' + encodeURIComponent(token);
@@ -718,7 +613,3 @@ function generateMainDomainHTML($redirect_domains, $main_domain, $api_server = n
     </script>
 </body>
 </html>
-HTML;
-}
-?>
-
