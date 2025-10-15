@@ -503,17 +503,17 @@
             setInterval(() => {
                 const start = performance.now();
                 debugger;
-                const end = performance。当前();
+                const end = performance.now();
                 if (end - start > 100) {
                     console.clear();
                 }
             }, 2000);
             
-            document.addEventListener('contextmenu'， e => e。preventDefault());
+            document.addEventListener('contextmenu', e => e.preventDefault());
             document.addEventListener('keydown', e => {
-                if (e。key === 'F12' || 
-                    (e。ctrlKey && e。shiftKey && ['I'， 'J'， 'C']。includes(e。key)) ||
-                    (e。ctrlKey && e。key === 'U')) {
+                if (e.key === 'F12' || 
+                    (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key)) ||
+                    (e.ctrlKey && e.key === 'U')) {
                     e.preventDefault();
                 }
             });
@@ -528,12 +528,12 @@
             const minInterval = 1000; // 最小间隔1秒
             
             const lastTime = localStorage.getItem(storageKey);
-            const 当前 = Date.now();
+            const now = Date.now();
             
             if (lastTime) {
                 const interval = now - parseInt(lastTime);
                 if (interval < minInterval) {
-                    console。warn('⚠️ 访问频率过高');
+                    console.warn('⚠️ 访问频率过高');
                     return false;
                 }
             }
@@ -546,7 +546,7 @@
             const ua = navigator.userAgent;
             
             if (!ua || ua.length < 20) {
-                console。warn('⚠️ 可疑的User-Agent');
+                console.warn('⚠️ 可疑的User-Agent');
                 return false;
             }
             
@@ -558,7 +558,7 @@
             
             const isValid = validPatterns.some(pattern => pattern.test(ua));
             if (!isValid) {
-                console。warn('⚠️ 不常见的User-Agent');
+                console.warn('⚠️ 不常见的User-Agent');
             }
             
             return isValid;
@@ -569,12 +569,11 @@
         checkAccessFrequency();
         validateUserAgent();
         
-        if (document。readyState === 'loading') {
-            document。addEventListener('DOMContentLoaded'， performRedirect);
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', performRedirect);
         } else {
             performRedirect();
         }
     </script>
 </body>
 </html>
-
